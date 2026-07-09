@@ -6,20 +6,23 @@
     <title>深度数据报道：沸腾的地球 - 2026全景气候危机</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
-        /* ================= 基础重置与高级排版 ================= */
+        /* ================= 浅色系：高级严肃新闻排版 ================= */
         :root {
-            --bg-dark: #0a0a0c;
-            --bg-card: #16161a;
-            --text-main: #d1d1d1;
-            --text-title: #ffffff;
-            --accent-red: #e63946;
-            --accent-orange: #f4a261;
-            --accent-blue: #457b9d;
+            /* 页面背景：采用略带暖色的米白/浅灰，保护视力且具高级感 */
+            --bg-light: #f9f7f1; 
+            --bg-card: #ffffff;
+            --text-main: #333333;
+            --text-title: #111111;
+            /* 警报色系稍微调暗，使其在白底上更沉稳 */
+            --accent-red: #c1121f; 
+            --accent-orange: #d66800;
+            --accent-blue: #023e8a;
+            --line-color: #e0e0e0;
         }
 
         body, html {
             margin: 0; padding: 0;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-light);
             color: var(--text-main);
             font-family: 'Georgia', 'PingFang SC', 'Microsoft YaHei', serif;
             scroll-behavior: smooth;
@@ -29,22 +32,22 @@
         .breaking-bar {
             position: fixed; top: 0; width: 100%;
             background: var(--accent-red); color: white;
-            font-family: sans-serif; font-weight: bold; font-size: 0.9rem;
-            padding: 8px 0; display: flex; align-items: center; z-index: 1000;
-            box-shadow: 0 2px 10px rgba(230,57,70,0.5);
+            font-family: sans-serif; font-weight: bold; font-size: 0.95rem;
+            padding: 10px 0; display: flex; align-items: center; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(193, 18, 31, 0.3);
         }
         .live-pulse {
-            width: 8px; height: 8px; background: #fff; border-radius: 50%;
+            width: 10px; height: 10px; background: #fff; border-radius: 50%;
             margin: 0 15px; animation: pulse 1s infinite alternate;
         }
-        @keyframes pulse { from {opacity: 1; transform: scale(1);} to {opacity: 0.3; transform: scale(1.2);} }
+        @keyframes pulse { from {opacity: 1; transform: scale(1);} to {opacity: 0.5; transform: scale(1.2);} }
 
         /* ================= 章节容器结构 ================= */
         .chapter {
             min-height: 100vh;
             padding: 80px 5% 60px 5%;
             box-sizing: border-box;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid var(--line-color);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -66,19 +69,20 @@
             justify-content: center;
         }
 
-        h1.main-title { font-size: 4rem; color: var(--text-title); line-height: 1.1; margin-bottom: 20px; font-family: sans-serif; }
+        h1.main-title { font-size: 4.2rem; color: var(--text-title); line-height: 1.1; margin-bottom: 20px; font-family: sans-serif; font-weight: 900;}
         h1.main-title span { color: var(--accent-red); }
-        h2.chapter-title { font-size: 2.2rem; color: var(--accent-orange); margin-bottom: 20px; font-family: sans-serif; border-left: 5px solid var(--accent-red); padding-left: 15px;}
+        h2.chapter-title { font-size: 2.2rem; color: var(--accent-orange); margin-bottom: 20px; font-family: sans-serif; border-left: 6px solid var(--accent-red); padding-left: 15px; font-weight: 800;}
         
-        p.lead { font-size: 1.3rem; color: #a8a8a8; line-height: 1.8; margin-bottom: 30px; font-style: italic; }
-        p.body-text { font-size: 1.1rem; line-height: 2; margin-bottom: 20px; text-align: justify; }
+        p.lead { font-size: 1.35rem; color: #555; line-height: 1.8; margin-bottom: 30px; font-style: italic; }
+        p.body-text { font-size: 1.15rem; line-height: 2; margin-bottom: 20px; text-align: justify; color: #222; }
 
         /* 引言/金句块 */
         .pull-quote {
-            border-left: 4px solid var(--accent-blue);
-            background: rgba(69, 123, 157, 0.1);
-            padding: 20px; margin: 25px 0;
-            font-size: 1.15rem; color: #fff; font-style: italic;
+            border-left: 5px solid var(--accent-blue);
+            background: rgba(2, 62, 138, 0.05);
+            padding: 20px 25px; margin: 25px 0;
+            font-size: 1.15rem; color: var(--accent-blue); font-style: italic;
+            font-weight: bold;
         }
 
         /* 图表与数据卡片区域 */
@@ -86,13 +90,14 @@
         .chart-container {
             width: 100%; height: 500px; background: var(--bg-card);
             border-radius: 8px; padding: 20px; box-sizing: border-box;
-            border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid var(--line-color); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
         }
 
         .data-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: var(--bg-card); padding: 25px; border-top: 4px solid var(--accent-red); text-align: center; border-radius: 5px;}
-        .card-num { font-size: 3rem; font-weight: bold; color: var(--text-title); margin: 10px 0; font-family: sans-serif;}
-        .card-desc { font-size: 0.95rem; color: #888; }
+        .card { background: var(--bg-card); padding: 25px; border-top: 5px solid var(--accent-red); text-align: center; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 1px solid var(--line-color); border-right: 1px solid var(--line-color); border-bottom: 1px solid var(--line-color);}
+        .card-num { font-size: 3rem; font-weight: 900; color: var(--text-title); margin: 10px 0; font-family: sans-serif;}
+        .card-desc { font-size: 0.95rem; color: #666; font-weight: bold;}
 
         /* 左侧浮动导航 */
         .side-nav {
@@ -100,10 +105,10 @@
             display: flex; flex-direction: column; gap: 20px; z-index: 100;
         }
         .side-nav a {
-            color: #555; text-decoration: none; font-family: sans-serif; font-size: 0.85rem; font-weight: bold;
+            color: #888; text-decoration: none; font-family: sans-serif; font-size: 0.85rem; font-weight: bold;
             display: flex; align-items: center; gap: 10px; transition: all 0.3s;
         }
-        .side-nav a::before { content: ""; width: 30px; height: 2px; background: #555; transition: all 0.3s; }
+        .side-nav a::before { content: ""; width: 30px; height: 2px; background: #ccc; transition: all 0.3s; }
         .side-nav a:hover, .side-nav a.active { color: var(--accent-red); }
         .side-nav a:hover::before, .side-nav a.active::before { background: var(--accent-red); width: 50px; }
 
@@ -112,7 +117,7 @@
             .content-grid { grid-template-columns: 1fr; }
             .side-nav { display: none; }
             .chapter { padding: 60px 5%; }
-            h1.main-title { font-size: 2.5rem; }
+            h1.main-title { font-size: 2.8rem; }
         }
     </style>
 </head>
@@ -136,8 +141,8 @@
     </div>
 
     <!-- ================= 卷首语 (封面大屏) ================= -->
-    <div id="ch1" class="chapter" style="justify-content: center; text-align: center; background: radial-gradient(circle at center, #2b1111 0%, var(--bg-dark) 70%);">
-        <div style="max-width: 800px;">
+    <div id="ch1" class="chapter" style="justify-content: center; text-align: center; background: linear-gradient(180deg, #fdfcf8 0%, #eae5d9 100%); border-bottom: none;">
+        <div style="max-width: 850px;">
             <h1 class="main-title">沸腾的地球<br><span>2026 全景气候危机追踪</span></h1>
             <p class="lead">“气候变暖的时代已经结束，全球沸腾的时代已然到来。”</p>
             <p class="body-text" style="text-align: center;">
@@ -154,11 +159,11 @@
                     <div class="card-num" style="color: var(--accent-orange);">200万+</div>
                 </div>
             </div>
-            <p style="margin-top: 50px; font-family: sans-serif; color: #666; animation: pulse 2s infinite;">向下滚动开启数据长卷 ↓</p>
+            <p style="margin-top: 50px; font-family: sans-serif; color: #888; font-weight: bold; animation: pulse 2s infinite;">向下滚动开启数据长卷 ↓</p>
         </div>
     </div>
 
-    <!-- ================= 第一章：极限温度 (温度距平条形图) ================= -->
+    <!-- ================= 第一章：极限温度 ================= -->
     <div id="ch2" class="chapter">
         <div class="content-grid">
             <div class="text-zone">
@@ -178,20 +183,20 @@
             </div>
             <div class="visual-zone">
                 <div id="chart1" class="chart-container"></div>
-                <div style="text-align: right; font-size: 0.8rem; color: #555;">数据来源：NASA Goddard Institute for Space Studies (GISS)</div>
+                <div style="text-align: right; font-size: 0.85rem; color: #888; font-family: sans-serif;">数据来源：NASA Goddard Institute for Space Studies (GISS)</div>
             </div>
         </div>
     </div>
 
-    <!-- ================= 第二章：灾害频发 (多折线联动图) ================= -->
-    <div id="ch3" class="chapter">
+    <!-- ================= 第二章：灾害频发 ================= -->
+    <div id="ch3" class="chapter" style="background-color: #ffffff;">
         <div class="content-grid">
             <div class="visual-zone">
-                <div id="chart2" class="chart-container"></div>
-                <div style="text-align: right; font-size: 0.8rem; color: #555;">数据来源：EM-DAT The International Disaster Database</div>
+                <div id="chart2" class="chart-container" style="background: var(--bg-light);"></div>
+                <div style="text-align: right; font-size: 0.85rem; color: #888; font-family: sans-serif;">数据来源：EM-DAT The International Disaster Database</div>
             </div>
             <div class="text-zone">
-                <h2 class="chapter-title">第二章：克劳修斯-克拉佩龙方程的惩罚</h2>
+                <h2 class="chapter-title">第二章：大气的惩罚与灾难曲线</h2>
                 <p class="body-text">
                     气温的上升并非孤立现象，它直接改变了地球的大气循环系统。气象学中有一个著名的物理法则——<strong>“克劳修斯-克拉佩龙方程”</strong>（Clausius-Clapeyron relation）：大气温度每升高1℃，空气中就能多容纳约7%的水蒸气。
                 </p>
@@ -205,7 +210,7 @@
         </div>
     </div>
 
-    <!-- ================= 第三章：气候代价与难民 (南丁格尔玫瑰图 + 柱状图) ================= -->
+    <!-- ================= 第三章：气候代价 ================= -->
     <div id="ch4" class="chapter">
         <div class="content-grid">
             <div class="text-zone">
@@ -218,27 +223,27 @@
                 </p>
                 <div class="data-cards">
                     <div class="card" style="border-top-color: var(--accent-blue);">
-                        <div class="card-desc">因气候灾害被迫流离失所的人数(年均)</div>
+                        <div class="card-desc">因气候灾害被迫流离失所(年均)</div>
                         <div class="card-num" style="color: var(--accent-blue);">2150万</div>
                     </div>
                     <div class="card" style="border-top-color: var(--accent-orange);">
-                        <div class="card-desc">2025年极端气象造成全球经济损失</div>
+                        <div class="card-desc">2025年极端气象全球经济损失</div>
                         <div class="card-num" style="color: var(--accent-orange);">$3800亿</div>
                     </div>
                 </div>
             </div>
             <div class="visual-zone">
-                <h3 style="color: #fff; text-align: center; font-size: 1.1rem; margin: 0;">各类型气候灾害导致的经济损失占比 (10亿美元)</h3>
+                <h3 style="color: var(--text-title); text-align: center; font-size: 1.15rem; margin: 0; font-family: sans-serif;">各类型气候灾害导致的经济损失占比 (10亿美元)</h3>
                 <div id="chart3" class="chart-container" style="height: 400px;"></div>
             </div>
         </div>
     </div>
 
-    <!-- ================= 终章：行动与声明 (双柱对比图) ================= -->
-    <div id="ch5" class="chapter">
+    <!-- ================= 终章：行动与声明 ================= -->
+    <div id="ch5" class="chapter" style="background-color: #ffffff; border-bottom: none;">
         <div class="content-grid">
             <div class="visual-zone">
-                <div id="chart4" class="chart-container" style="height: 400px;"></div>
+                <div id="chart4" class="chart-container" style="height: 400px; background: var(--bg-light);"></div>
             </div>
             <div class="text-zone">
                 <h2 class="chapter-title">终章：碳的倒计时与自救</h2>
@@ -255,13 +260,15 @@
         </div>
     </div>
 
-    <!-- ================= JS: ECharts 渲染脚本 ================= -->
+    <!-- ================= JS: ECharts 渲染脚本 (浅色主题配置) ================= -->
     <script>
-        // 设置所有图表的通用暗色主题配置
+        // 设置所有图表的通用浅色主题配置
         const chartBaseOption = {
             backgroundColor: 'transparent',
-            textStyle: { fontFamily: 'sans-serif' }
+            textStyle: { fontFamily: 'sans-serif', color: '#444' }
         };
+        const axisColor = '#666';
+        const splitLineColor = '#e8e8e8';
 
         // ---------------- 图表1：百年气温距平 ----------------
         var chart1 = echarts.init(document.getElementById('chart1'));
@@ -275,10 +282,10 @@
         chart1.setOption({
             ...chartBaseOption,
             tooltip: { trigger: 'axis', formatter: '{b}年<br/>异常值: {c} ℃' },
-            grid: { top: '10%', bottom: '15%', left: '8%', right: '5%' },
-            xAxis: { type: 'category', data: years, axisLabel: { color: '#888' }, axisLine: { lineStyle: { color: '#444' } } },
-            yAxis: { type: 'value', axisLabel: { color: '#888' }, splitLine: { lineStyle: { color: '#2a2a2a', type: 'dashed' } }, name: '气温距平 (℃)', nameTextStyle: {color: '#888'} },
-            visualMap: { show: false, min: -0.5, max: 1.5, inRange: { color: ['#457b9d', '#a8dadc', '#f4a261', '#e63946', '#780000'] } },
+            grid: { top: '12%', bottom: '15%', left: '8%', right: '5%' },
+            xAxis: { type: 'category', data: years, axisLabel: { color: axisColor }, axisLine: { lineStyle: { color: '#ccc' } } },
+            yAxis: { type: 'value', axisLabel: { color: axisColor }, splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }, name: '气温距平 (℃)', nameTextStyle: {color: axisColor} },
+            visualMap: { show: false, min: -0.5, max: 1.5, inRange: { color: ['#313695', '#74add1', '#fdae61', '#d73027', '#a50026'] } },
             series: [{ data: tempData, type: 'bar', barWidth: '90%' }]
         });
 
@@ -294,14 +301,14 @@
         chart2.setOption({
             ...chartBaseOption,
             tooltip: { trigger: 'axis' },
-            legend: { data: ['区域洪涝', '飓风风暴', '极端热浪'], textStyle: { color: '#aaa' }, top: 0 },
+            legend: { data: ['区域洪涝', '飓风风暴', '极端热浪'], textStyle: { color: '#333', fontWeight: 'bold' }, top: 0 },
             grid: { top: '15%', bottom: '10%', left: '10%', right: '5%' },
-            xAxis: { type: 'category', data: dYears, boundaryGap: false, axisLabel: { color: '#888' } },
-            yAxis: { type: 'value', name: '年发生次数', nameTextStyle: {color: '#888'}, splitLine: { lineStyle: { color: '#2a2a2a' } }, axisLabel: { color: '#888' } },
+            xAxis: { type: 'category', data: dYears, boundaryGap: false, axisLabel: { color: axisColor } },
+            yAxis: { type: 'value', name: '年发生次数', nameTextStyle: {color: axisColor}, splitLine: { lineStyle: { color: splitLineColor } }, axisLabel: { color: axisColor } },
             series: [
-                { name: '区域洪涝', type: 'line', data: floods, smooth: true, itemStyle: { color: '#457b9d' }, areaStyle: { opacity: 0.2 } },
-                { name: '飓风风暴', type: 'line', data: storms, smooth: true, itemStyle: { color: '#f4a261' } },
-                { name: '极端热浪', type: 'line', data: heats, smooth: true, itemStyle: { color: '#e63946' }, areaStyle: { opacity: 0.2 } }
+                { name: '区域洪涝', type: 'line', data: floods, smooth: true, itemStyle: { color: '#023e8a' }, areaStyle: { color: 'rgba(2, 62, 138, 0.1)' } },
+                { name: '飓风风暴', type: 'line', data: storms, smooth: true, itemStyle: { color: '#d66800' } },
+                { name: '极端热浪', type: 'line', data: heats, smooth: true, itemStyle: { color: '#c1121f' }, areaStyle: { color: 'rgba(193, 18, 31, 0.1)' } }
             ]
         });
 
@@ -310,16 +317,16 @@
         chart3.setOption({
             ...chartBaseOption,
             tooltip: { trigger: 'item', formatter: '{b} : ${c}十亿 ({d}%)' },
-            legend: { bottom: 0, textStyle: { color: '#aaa' }, itemWidth: 10, itemHeight: 10 },
+            legend: { bottom: 0, textStyle: { color: '#444' }, itemWidth: 12, itemHeight: 12 },
             series: [{
-                type: 'pie', radius: ['15%', '70%'], center: ['50%', '45%'], roseType: 'area',
-                itemStyle: { borderRadius: 4, borderColor: '#16161a', borderWidth: 2 },
+                type: 'pie', radius: ['15%', '65%'], center: ['50%', '45%'], roseType: 'area',
+                itemStyle: { borderRadius: 4, borderColor: '#fff', borderWidth: 2 },
                 data: [
-                    { value: 1450, name: '洪涝及次生地质灾害', itemStyle: { color: '#457b9d' } },
-                    { value: 1200, name: '热带气旋(台风/飓风)', itemStyle: { color: '#f4a261' } },
-                    { value: 650, name: '长期极端干旱', itemStyle: { color: '#e9c46a' } },
-                    { value: 420, name: '大面积森林野火', itemStyle: { color: '#e63946' } },
-                    { value: 180, name: '极端寒潮与暴雪', itemStyle: { color: '#1d3557' } }
+                    { value: 1450, name: '洪涝及次生灾害', itemStyle: { color: '#023e8a' } },
+                    { value: 1200, name: '热带气旋(飓风)', itemStyle: { color: '#f77f00' } },
+                    { value: 650, name: '长期极端干旱', itemStyle: { color: '#fcbf49' } },
+                    { value: 420, name: '大面积森林野火', itemStyle: { color: '#d90429' } },
+                    { value: 180, name: '极端寒潮与暴雪', itemStyle: { color: '#0077b6' } }
                 ]
             }]
         });
@@ -328,24 +335,25 @@
         var chart4 = echarts.init(document.getElementById('chart4'));
         chart4.setOption({
             ...chartBaseOption,
-            title: { text: '1850-2025 历史累计二氧化碳排放量估算 (十亿吨)', textStyle: { color: '#ccc', fontSize: 14 }, left: 'center', top: 0 },
+            title: { text: '1850-2025 历史累计二氧化碳排放量估算 (十亿吨)', textStyle: { color: '#333', fontSize: 14 }, left: 'center', top: 0 },
             tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-            grid: { top: '15%', bottom: '5%', left: '20%', right: '5%' },
+            grid: { top: '15%', bottom: '5%', left: '20%', right: '10%' },
             xAxis: { type: 'value', show: false },
-            yAxis: { type: 'category', inverse: true, data: ['美国', '欧盟及英国', '中国', '俄罗斯', '印度', '整个非洲大陆'], axisLabel: { color: '#ccc', fontSize: 13 }, axisLine: { show: false }, axisTick: { show: false } },
+            yAxis: { type: 'category', inverse: true, data: ['美国', '欧盟及英国', '中国', '俄罗斯', '印度', '整个非洲大陆'], axisLabel: { color: '#333', fontSize: 13, fontWeight: 'bold' }, axisLine: { show: false }, axisTick: { show: false } },
             series: [{
                 type: 'bar',
                 data: [
-                    { value: 430, itemStyle: { color: '#e63946' } }, 
-                    { value: 360, itemStyle: { color: '#e63946' } }, 
-                    { value: 250, itemStyle: { color: '#f4a261' } }, 
-                    { value: 120, itemStyle: { color: '#f4a261' } }, 
-                    { value: 60, itemStyle: { color: '#457b9d' } }, 
-                    { value: 45, itemStyle: { color: '#2a9d8f' } }
+                    { value: 430, itemStyle: { color: '#c1121f' } }, 
+                    { value: 360, itemStyle: { color: '#c1121f' } }, 
+                    { value: 250, itemStyle: { color: '#f77f00' } }, 
+                    { value: 120, itemStyle: { color: '#f77f00' } }, 
+                    { value: 60, itemStyle: { color: '#023e8a' } }, 
+                    { value: 45, itemStyle: { color: '#0077b6' } }
                 ],
-                label: { show: true, position: 'right', color: '#fff', formatter: '{c} B.Tons' },
-                barWidth: '50%',
-                showBackground: true, backgroundStyle: { color: 'rgba(255, 255, 255, 0.05)' }
+                label: { show: true, position: 'right', color: '#444', fontWeight: 'bold', formatter: '{c} B.Tons' },
+                barWidth: '45%',
+                showBackground: true, backgroundStyle: { color: 'rgba(0, 0, 0, 0.04)' },
+                itemStyle: { borderRadius: [0, 4, 4, 0] }
             }]
         });
 
