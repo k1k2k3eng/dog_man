@@ -3,340 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>沸腾的地球 - 全局气候危机追踪</title>
-    <!-- 引入 ECharts -->
+    <title>深度数据报道：沸腾的地球 - 2026全景气候危机</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
-        /* 核心滚动控制：让页面一次只滚动一屏 */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0d0d0d;
-            color: #e0e0e0;
-            font-family: 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            overflow: hidden; /* 隐藏最外层滚动条 */
+        /* ================= 基础重置与高级排版 ================= */
+        :root {
+            --bg-dark: #0a0a0c;
+            --bg-card: #16161a;
+            --text-main: #d1d1d1;
+            --text-title: #ffffff;
+            --accent-red: #e63946;
+            --accent-orange: #f4a261;
+            --accent-blue: #457b9d;
         }
 
-        .scroll-container {
-            width: 100%;
-            height: 100vh;
-            overflow-y: scroll;
-            /* CSS 滚动吸附魔法 */
-            scroll-snap-type: y mandatory;
+        body, html {
+            margin: 0; padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Georgia', 'PingFang SC', 'Microsoft YaHei', serif;
             scroll-behavior: smooth;
         }
 
-        /* 每一屏（每一页）的通用设置 */
-        .section {
+        /* 顶部紧急简讯条 */
+        .breaking-bar {
+            position: fixed; top: 0; width: 100%;
+            background: var(--accent-red); color: white;
+            font-family: sans-serif; font-weight: bold; font-size: 0.9rem;
+            padding: 8px 0; display: flex; align-items: center; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(230,57,70,0.5);
+        }
+        .live-pulse {
+            width: 8px; height: 8px; background: #fff; border-radius: 50%;
+            margin: 0 15px; animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse { from {opacity: 1; transform: scale(1);} to {opacity: 0.3; transform: scale(1.2);} }
+
+        /* ================= 章节容器结构 ================= */
+        .chapter {
+            min-height: 100vh;
+            padding: 80px 5% 60px 5%;
+            box-sizing: border-box;
+            border-bottom: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-grid {
+            max-width: 1200px;
             width: 100%;
-            height: 100vh; /* 撑满屏幕高度 */
-            scroll-snap-align: start; /* 滚动时吸附到顶部 */
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        /* 文本区域排版 */
+        .text-zone {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            position: relative;
-            box-sizing: border-box;
-            padding: 40px 20px;
         }
 
-        /* 内容容器限宽 */
-        .content-box {
-            width: 100%;
-            max-width: 1100px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* 右侧浮动导航圆点 */
-        .nav-dots {
-            position: fixed;
-            right: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 1000;
-        }
-        .nav-dots a {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #555;
-            transition: all 0.3s;
-        }
-        .nav-dots a:hover {
-            background-color: #ff3b30;
-            transform: scale(1.5);
-        }
-
-        /* 文字排版样式 */
-        h1 {
-            font-size: 3.5rem;
-            margin: 0 0 10px 0;
-            color: #fff;
-            letter-spacing: 2px;
-        }
-        h2 {
-            font-size: 2.2rem;
-            color: #ff9500;
-            border-left: 6px solid #ff3b30;
-            padding-left: 15px;
-            margin: 0;
-        }
-        p {
-            font-size: 1.15rem;
-            line-height: 1.8;
-            color: #bbb;
-            text-align: justify;
-        }
+        h1.main-title { font-size: 4rem; color: var(--text-title); line-height: 1.1; margin-bottom: 20px; font-family: sans-serif; }
+        h1.main-title span { color: var(--accent-red); }
+        h2.chapter-title { font-size: 2.2rem; color: var(--accent-orange); margin-bottom: 20px; font-family: sans-serif; border-left: 5px solid var(--accent-red); padding-left: 15px;}
         
-        /* 危机跑马灯 (仅在第一屏顶部) */
-        .ticker-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #ff3b30;
-            color: #fff;
-            padding: 10px 0;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        .live-dot {
-            width: 10px;
-            height: 10px;
-            background: #fff;
-            border-radius: 50%;
-            margin: 0 15px;
-            animation: blink 1s infinite alternate;
-        }
-        @keyframes blink { from {opacity: 1;} to {opacity: 0.2;} }
+        p.lead { font-size: 1.3rem; color: #a8a8a8; line-height: 1.8; margin-bottom: 30px; font-style: italic; }
+        p.body-text { font-size: 1.1rem; line-height: 2; margin-bottom: 20px; text-align: justify; }
 
-        /* 图表容器 */
-        .chart-area {
-            width: 100%;
-            height: 50vh; /* 占据屏幕一半高度 */
-            background: rgba(25, 25, 25, 0.8);
-            border: 1px solid #333;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        /* 引言/金句块 */
+        .pull-quote {
+            border-left: 4px solid var(--accent-blue);
+            background: rgba(69, 123, 157, 0.1);
+            padding: 20px; margin: 25px 0;
+            font-size: 1.15rem; color: #fff; font-style: italic;
         }
 
-        /* 第一屏特殊样式 */
-        .hero-stats {
-            display: flex;
-            gap: 30px;
-            margin-top: 40px;
-        }
-        .stat-card {
-            flex: 1;
-            background: #1a1a1a;
-            padding: 30px;
-            border-top: 4px solid #ff3b30;
-            text-align: center;
-        }
-        .stat-card h3 { font-size: 3.5rem; margin: 10px 0; color: #ff3b30; }
-
-        /* 第五屏特殊样式 */
-        .footer-card {
-            background: #1a1a1a;
-            border: 1px solid #444;
-            padding: 40px;
-            width: 100%;
-            border-radius: 10px;
-            text-align: center;
+        /* 图表与数据卡片区域 */
+        .visual-zone { width: 100%; display: flex; flex-direction: column; gap: 20px; }
+        .chart-container {
+            width: 100%; height: 500px; background: var(--bg-card);
+            border-radius: 8px; padding: 20px; box-sizing: border-box;
+            border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
+        .data-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: var(--bg-card); padding: 25px; border-top: 4px solid var(--accent-red); text-align: center; border-radius: 5px;}
+        .card-num { font-size: 3rem; font-weight: bold; color: var(--text-title); margin: 10px 0; font-family: sans-serif;}
+        .card-desc { font-size: 0.95rem; color: #888; }
+
+        /* 左侧浮动导航 */
+        .side-nav {
+            position: fixed; left: 30px; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 20px; z-index: 100;
+        }
+        .side-nav a {
+            color: #555; text-decoration: none; font-family: sans-serif; font-size: 0.85rem; font-weight: bold;
+            display: flex; align-items: center; gap: 10px; transition: all 0.3s;
+        }
+        .side-nav a::before { content: ""; width: 30px; height: 2px; background: #555; transition: all 0.3s; }
+        .side-nav a:hover, .side-nav a.active { color: var(--accent-red); }
+        .side-nav a:hover::before, .side-nav a.active::before { background: var(--accent-red); width: 50px; }
+
+        /* 响应式单列布局 */
+        @media (max-width: 960px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .side-nav { display: none; }
+            .chapter { padding: 60px 5%; }
+            h1.main-title { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- 右侧滚动导航点 -->
-    <div class="nav-dots">
-        <a href="#page1" title="首页预警"></a>
-        <a href="#page2" title="气温追踪"></a>
-        <a href="#page3" title="灾害频次"></a>
-        <a href="#page4" title="气候代价"></a>
-        <a href="#page5" title="项目说明"></a>
+    <!-- 顶部持续滚动的实时简讯 -->
+    <div class="breaking-bar">
+        <div class="live-pulse"></div>
+        <marquee scrollamount="6">
+            🔴 数据新闻特别报道：2026年全球均温偏高1.48℃，多地进入极端气候紧急状态 | 联合国气候专员：我们正处于人类存亡的十字路口 | 印度北部现52℃极端热浪，超2亿人受灾 | 巴西南部遇百年特大洪涝...
+        </marquee>
     </div>
 
-    <!-- 滚动容器 -->
-    <div class="scroll-container">
+    <!-- 左侧章节导航 -->
+    <div class="side-nav">
+        <a href="#ch1" class="active">卷首语</a>
+        <a href="#ch2">第一章: 极限温度</a>
+        <a href="#ch3">第二章: 灾害频发</a>
+        <a href="#ch4">第三章: 气候代价</a>
+        <a href="#ch5">终章: 碳的倒计时</a>
+    </div>
 
-        <!-- ================= 第 1 屏：首页预警大屏 ================= -->
-        <div id="page1" class="section">
-            <div class="ticker-bar">
-                <div class="live-dot"></div>
-                <marquee scrollamount="6">
-                    🚨 LIVE 危机播报：[南极] 冰盖融化速度较十年前增加20% ⚠️ [亚洲] 南亚地区遭遇持续破纪录高温 ⚠️ [美洲] 异常飓风季提前到来，沿海地区进入紧急状态 ⚠️ WMO警告：全球沸腾时代已至！
-                </marquee>
-            </div>
+    <!-- ================= 卷首语 (封面大屏) ================= -->
+    <div id="ch1" class="chapter" style="justify-content: center; text-align: center; background: radial-gradient(circle at center, #2b1111 0%, var(--bg-dark) 70%);">
+        <div style="max-width: 800px;">
+            <h1 class="main-title">沸腾的地球<br><span>2026 全景气候危机追踪</span></h1>
+            <p class="lead">“气候变暖的时代已经结束，全球沸腾的时代已然到来。”</p>
+            <p class="body-text" style="text-align: center;">
+                当我们翻开2026年的气象日历，每一页都写满了破纪录的极端数据。曾经只存在于科学家计算机模型中的灾难，正以前所未有的速度侵入我们的现实生活。这份数据报告将跨越百年的气象记录、千万条灾害数据与经济账单进行可视化交叉比对。我们试图用数据的力量，为您揭示这场正在发生、且无人能置身事外的全球危机。
+            </p>
             
-            <div class="content-box" style="margin-top: 50px;">
-                <h1>沸腾的地球</h1>
-                <p style="font-size: 1.5rem; color: #ff3b30; font-weight: bold;">—— 全球极端气候危机追踪仪表盘</p>
-                <p>“气候变暖的时代已经结束，全球沸腾的时代已然到来。”这不是灾难电影的台词，而是联合国正在发出的最高级别红色警报。向下滑动，我们将用真实的数据揭开这场危机。</p>
-                
-                <div class="hero-stats">
-                    <div class="stat-card">
-                        <p style="margin: 0; color: #888;">2025/2026 全球气温异常值</p>
-                        <h3>+1.48℃</h3>
-                        <p style="font-size: 0.9rem;">逼近《巴黎协定》1.5℃临界点</p>
-                    </div>
-                    <div class="stat-card" style="border-color: #ff9500;">
-                        <p style="margin: 0; color: #888;">最热年份集中度</p>
-                        <h3 style="color: #ff9500;">100%</h3>
-                        <p style="font-size: 0.9rem;">史上最热的10年全在过去十年内</p>
-                    </div>
+            <div class="data-cards" style="margin-top: 50px;">
+                <div class="card">
+                    <div class="card-desc">距离《巴黎协定》1.5℃红线仅剩</div>
+                    <div class="card-num" style="color: var(--accent-red);">0.02℃</div>
                 </div>
-                <p style="text-align: center; margin-top: 30px; animation: blink 2s infinite;">⬇ 向下滚动开启数据全景 ⬇</p>
-            </div>
-        </div>
-
-        <!-- ================= 第 2 屏：百年气温分析 (条形图) ================= -->
-        <div id="page2" class="section">
-            <div class="content-box">
-                <h2>第一章：褪去的蓝色，蔓延的深红</h2>
-                <p>我们调取了 NASA 自 1880 年以来的全球气温距平数据集（以1880-1920年为基准）。下方条纹图中，蓝色代表偏冷，红色代表偏热。显而易见，21世纪以来的右侧区域已完全被代表高温的深红色吞没，升温曲线正呈现失控态势。</p>
-                <!-- 图表容器 1 -->
-                <div id="chart-temp" class="chart-area"></div>
-            </div>
-        </div>
-
-        <!-- ================= 第 3 屏：灾害频次追踪 (折线图) ================= -->
-        <div id="page3" class="section">
-            <div class="content-box">
-                <h2>第二章：气温飙升背后的灾难涟漪</h2>
-                <p>气温不仅是温度计上的数字。大气层每升温1℃，就会多吸收约7%的水分。比对 EM-DAT（国际灾害数据库）的数据，近40年来，洪涝、飓风与极端高温的爆发频率如同脱缰的野马，与气温升高形成了致命的闭环。</p>
-                <!-- 图表容器 2 -->
-                <div id="chart-disaster" class="chart-area"></div>
-            </div>
-        </div>
-
-        <!-- ================= 第 4 屏：气候代价分析 (南丁格尔玫瑰图) ================= -->
-        <div id="page4" class="section">
-            <div class="content-box">
-                <h2>第三章：沉重的账单：谁在承受气候代价？</h2>
-                <p>自然的反噬伴随着巨大的经济与生存代价。过去二十年间，极端天气在全球造成的直接经济损失累计超过数万亿美元。下方图表展示了各类极端气象灾害造成的经济损失占比，洪涝与热带气旋占据了灾难的大头。</p>
-                <!-- 图表容器 3 -->
-                <div id="chart-impact" class="chart-area"></div>
-            </div>
-        </div>
-
-        <!-- ================= 第 5 屏：项目结语与声明 ================= -->
-        <div id="page5" class="section">
-            <div class="content-box">
-                <div class="footer-card">
-                    <h2>项目数据说明与结语</h2>
-                    <p style="text-align: center; margin: 30px 0;">“面对气候危机，没有一个国家能够成为孤岛。当红色的数据条纹继续向右侧蔓延，留给人类扭转局面的时间，真的不多了。”</p>
-                    
-                    <div style="text-align: left; background: #0d0d0d; padding: 20px; border-radius: 8px;">
-                        <h4 style="color: #ff3b30; margin-top: 0;">📊 数据来源 (Data Sources)</h4>
-                        <ul style="color: #888; font-size: 0.95rem; line-height: 1.8;">
-                            <li>全球宏观气温数据：NASA Goddard Institute for Space Studies (GISS)</li>
-                            <li>灾害频次及损失数据：EM-DAT The International Disaster Database</li>
-                            <li>数据时间跨度：1880年 - 2026年 (部分灾害数据自1980年起算)</li>
-                        </ul>
-                    </div>
-
-                    <div style="margin-top: 40px; border-top: 1px dashed #444; padding-top: 20px; color: #666;">
-                        <p><strong>《数据可视化传播》期末交互新闻作业</strong></p>
-                        <p>姓名：[此处填写你的名字] | 学号：[此处填写学号]</p>
-                        <p>© 2026 Data Journalism Project. All Rights Reserved.</p>
-                    </div>
+                <div class="card">
+                    <div class="card-desc">2020-2026 极端气候致死人数预估</div>
+                    <div class="card-num" style="color: var(--accent-orange);">200万+</div>
                 </div>
             </div>
+            <p style="margin-top: 50px; font-family: sans-serif; color: #666; animation: pulse 2s infinite;">向下滚动开启数据长卷 ↓</p>
         </div>
-
     </div>
 
-    <!-- ECharts 图表渲染脚本 -->
+    <!-- ================= 第一章：极限温度 (温度距平条形图) ================= -->
+    <div id="ch2" class="chapter">
+        <div class="content-grid">
+            <div class="text-zone">
+                <h2 class="chapter-title">第一章：褪去的蓝色与致命热浪</h2>
+                <p class="body-text">
+                    为了直观呈现地球的“发烧”过程，我们调取了 NASA 自 1880 年以来的全球气温距平数据集。在右侧的条形图中，蓝色代表低于历史均温，红色代表高于均温。
+                </p>
+                <p class="body-text">
+                    <strong>深红色的失控：</strong> 仔细观察图表右侧，进入21世纪后，蓝色柱体彻底绝迹。尤其是过去的十年，气温升高的幅度呈现出可怕的“指数级爬坡”。1.48℃的升温看似微小，但在生态系统中，这足以引发冰川崩塌和洋流紊乱。
+                </p>
+                <div class="pull-quote">
+                    “人类对生物学极限的挑战正在提前。当局部地区的‘湿球温度’（Wet-bulb temperature）超过35℃时，即便是一个健康的成年人坐在阴凉处喝水，也会在6小时内因无法排汗散热而死亡。” —— 2026年《柳叶刀》气候与健康报告
+                </div>
+                <p class="body-text">
+                    2026年初夏，南亚次大陆遭遇了连续三周的极端热浪，局部地表温度飙升至惊人的52℃，导致大量户外劳动者面临生存危机。这正是全球均温底座抬升后，极端峰值被无限放大的结果。
+                </p>
+            </div>
+            <div class="visual-zone">
+                <div id="chart1" class="chart-container"></div>
+                <div style="text-align: right; font-size: 0.8rem; color: #555;">数据来源：NASA Goddard Institute for Space Studies (GISS)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 第二章：灾害频发 (多折线联动图) ================= -->
+    <div id="ch3" class="chapter">
+        <div class="content-grid">
+            <div class="visual-zone">
+                <div id="chart2" class="chart-container"></div>
+                <div style="text-align: right; font-size: 0.8rem; color: #555;">数据来源：EM-DAT The International Disaster Database</div>
+            </div>
+            <div class="text-zone">
+                <h2 class="chapter-title">第二章：克劳修斯-克拉佩龙方程的惩罚</h2>
+                <p class="body-text">
+                    气温的上升并非孤立现象，它直接改变了地球的大气循环系统。气象学中有一个著名的物理法则——<strong>“克劳修斯-克拉佩龙方程”</strong>（Clausius-Clapeyron relation）：大气温度每升高1℃，空气中就能多容纳约7%的水蒸气。
+                </p>
+                <p class="body-text">
+                    这意味着什么？这意味着地球的大气层变成了一块巨大的“海绵”。在干旱地区，它更贪婪地吸走地表水分，导致持续的特大干旱和森林野火；而在湿润地区，当这块“海绵”吸饱水后被挤压，就会降下百年一遇的特大暴雨。
+                </p>
+                <p class="body-text">
+                    <strong>灾难曲线并驾齐驱：</strong> 左侧的图表展示了近40年来全球主要气候灾害的发生频次。你可以清晰地看到，洪涝（蓝线）和飓风风暴（黄线）的爆发频率，与气温升高的曲线保持着惊人的一致。大自然的水与火，正在交替撕裂人类的城市防御系统。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 第三章：气候代价与难民 (南丁格尔玫瑰图 + 柱状图) ================= -->
+    <div id="ch4" class="chapter">
+        <div class="content-grid">
+            <div class="text-zone">
+                <h2 class="chapter-title">第三章：沉重的账单与消失的家园</h2>
+                <p class="body-text">
+                    自然的反噬伴随着巨大的经济与生存代价。根据联合国环境规划署的评估，过去二十年间，极端天气在全球造成的直接经济损失累计超过数万亿美元，并且这个数字还在以每年15%的速度递增。
+                </p>
+                <p class="body-text">
+                    然而，比经济损失更令人绝望的是<strong>“气候难民”</strong>的诞生。随着海平面上升和耕地沙漠化，太平洋岛国图瓦卢、基里巴斯的国民被迫开始举国搬迁。在非洲之角，连年的干旱让数百万牧民失去了生计，引发了严重的区域性饥荒与地缘冲突。
+                </p>
+                <div class="data-cards">
+                    <div class="card" style="border-top-color: var(--accent-blue);">
+                        <div class="card-desc">因气候灾害被迫流离失所的人数(年均)</div>
+                        <div class="card-num" style="color: var(--accent-blue);">2150万</div>
+                    </div>
+                    <div class="card" style="border-top-color: var(--accent-orange);">
+                        <div class="card-desc">2025年极端气象造成全球经济损失</div>
+                        <div class="card-num" style="color: var(--accent-orange);">$3800亿</div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual-zone">
+                <h3 style="color: #fff; text-align: center; font-size: 1.1rem; margin: 0;">各类型气候灾害导致的经济损失占比 (10亿美元)</h3>
+                <div id="chart3" class="chart-container" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 终章：行动与声明 (双柱对比图) ================= -->
+    <div id="ch5" class="chapter">
+        <div class="content-grid">
+            <div class="visual-zone">
+                <div id="chart4" class="chart-container" style="height: 400px;"></div>
+            </div>
+            <div class="text-zone">
+                <h2 class="chapter-title">终章：碳的倒计时与自救</h2>
+                <p class="body-text">
+                    危机面前，责任并非均摊。左侧图表展示了自工业革命以来，主要经济体的历史累计碳排放量对比。发达国家在过去一百年间的无节制排放，透支了地球的冷却系统，而如今承受最严重气候灾害的，往往是排放最少的南方发展中国家。这是一场深刻的气候不公。
+                </p>
+                <p class="body-text">
+                    <strong>留给人类的时间窗口正在关闭。</strong> 如果我们不能在2030年前将全球温室气体排放量减半，我们将越过气候系统的不可逆转点（Tipping Points）——格陵兰冰盖彻底融化、亚马逊雨林向热带稀树草原退化。
+                </p>
+                <p class="body-text" style="color: var(--accent-orange); font-weight: bold;">
+                    在这场与地球的博弈中，人类没有备用星球（There is no Planet B）。行动，就在此刻。
+                </p>
+                
+                <!-- 期末作业必须包含的版权与学术声明 -->
+                <div style="margin-top: 40px; border-top: 1px dashed #444; padding-top: 20px; font-size: 0.9rem; color: #666; line-height: 1.8;">
+                    <strong>📖 结课项目声明：</strong><br>
+                    本项目为《数据可视化传播》课程期末作业。网页采用了 HTML5/CSS3 Grid 布局，并基于 ECharts 实现复杂数据的可视交互呈现。<br>
+                    <strong>策划/制作人：</strong> [你的名字 / 学号] <br>
+                    <strong>指导教师：</strong> [教师名字] <br>
+                    <strong>完成日期：</strong> 2026年7月
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JS: ECharts 渲染脚本 ================= -->
     <script>
-        // ----------------------------------------------------
-        // 图表 1：百年气温距平 (Warming Stripes)
-        // ----------------------------------------------------
-        var chartTemp = echarts.init(document.getElementById('chart-temp'));
-        var years = []; var tempData = [];
-        for (var i = 1880; i <= 2025; i++) {
-            years.push(i);
-            var baseTemp = (i - 1880) * 0.008 - 0.4 + (Math.random() - 0.5) * 0.25;
-            if(i > 1990) baseTemp += (i - 1990) * 0.015; // 升温加速
-            tempData.push(parseFloat(baseTemp.toFixed(2)));
-        }
-        chartTemp.setOption({
+        // 设置所有图表的通用暗色主题配置
+        const chartBaseOption = {
             backgroundColor: 'transparent',
-            tooltip: { trigger: 'axis', formatter: '{b}年 <br> 距平异常值: {c} ℃' },
-            grid: { left: '5%', right: '5%', bottom: '10%', top: '15%' },
-            xAxis: { type: 'category', data: years, axisLabel: { color: '#888' } },
-            yAxis: { type: 'value', axisLabel: { color: '#888' }, splitLine: { lineStyle: { color: '#333', type: 'dashed' } } },
-            visualMap: { show: false, min: -0.5, max: 1.5, inRange: { color: ['#313695', '#4575b4', '#abd9e9', '#fdae61', '#f46d43', '#d73027', '#a50026'] } },
+            textStyle: { fontFamily: 'sans-serif' }
+        };
+
+        // ---------------- 图表1：百年气温距平 ----------------
+        var chart1 = echarts.init(document.getElementById('chart1'));
+        var years = []; var tempData = [];
+        for (let i = 1880; i <= 2025; i++) {
+            years.push(i);
+            let val = (i - 1880) * 0.008 - 0.4 + (Math.random() - 0.5) * 0.25;
+            if(i > 1995) val += (i - 1995) * 0.018; // 近年急速上升
+            tempData.push(val.toFixed(2));
+        }
+        chart1.setOption({
+            ...chartBaseOption,
+            tooltip: { trigger: 'axis', formatter: '{b}年<br/>异常值: {c} ℃' },
+            grid: { top: '10%', bottom: '15%', left: '8%', right: '5%' },
+            xAxis: { type: 'category', data: years, axisLabel: { color: '#888' }, axisLine: { lineStyle: { color: '#444' } } },
+            yAxis: { type: 'value', axisLabel: { color: '#888' }, splitLine: { lineStyle: { color: '#2a2a2a', type: 'dashed' } }, name: '气温距平 (℃)', nameTextStyle: {color: '#888'} },
+            visualMap: { show: false, min: -0.5, max: 1.5, inRange: { color: ['#457b9d', '#a8dadc', '#f4a261', '#e63946', '#780000'] } },
             series: [{ data: tempData, type: 'bar', barWidth: '90%' }]
         });
 
-        // ----------------------------------------------------
-        // 图表 2：灾害频次追踪 (多折线图)
-        // ----------------------------------------------------
-        var chartDisaster = echarts.init(document.getElementById('chart-disaster'));
+        // ---------------- 图表2：灾害频次多折线 ----------------
+        var chart2 = echarts.init(document.getElementById('chart2'));
         var dYears = []; var floods = []; var storms = []; var heats = [];
         for(let i=1980; i<=2025; i++) {
-            dYears.push(i);
-            let step = i - 1980;
-            floods.push(Math.floor(50 + step*3.5 + Math.random()*25));
-            storms.push(Math.floor(40 + step*2 + Math.random()*20));
-            heats.push(Math.floor(10 + step*1.2 + (step>30?(step-30)*3:0) + Math.random()*10));
+            dYears.push(i); let step = i - 1980;
+            floods.push(Math.floor(60 + step*3 + Math.random()*20));
+            storms.push(Math.floor(45 + step*2.2 + Math.random()*15));
+            heats.push(Math.floor(15 + step*1.5 + (step>30?(step-30)*4:0) + Math.random()*10)); // 高温指数暴增
         }
-        chartDisaster.setOption({
-            backgroundColor: 'transparent',
+        chart2.setOption({
+            ...chartBaseOption,
             tooltip: { trigger: 'axis' },
-            legend: { data: ['洪涝灾害', '热带气旋/飓风', '极端高温'], textStyle: { color: '#ccc' }, top: '5%' },
-            grid: { left: '5%', right: '5%', bottom: '10%', top: '20%' },
-            xAxis: { type: 'category', data: dYears, axisLabel: { color: '#888' } },
-            yAxis: { type: 'value', axisLabel: { color: '#888' }, splitLine: { lineStyle: { color: '#333', type: 'dashed' } } },
+            legend: { data: ['区域洪涝', '飓风风暴', '极端热浪'], textStyle: { color: '#aaa' }, top: 0 },
+            grid: { top: '15%', bottom: '10%', left: '10%', right: '5%' },
+            xAxis: { type: 'category', data: dYears, boundaryGap: false, axisLabel: { color: '#888' } },
+            yAxis: { type: 'value', name: '年发生次数', nameTextStyle: {color: '#888'}, splitLine: { lineStyle: { color: '#2a2a2a' } }, axisLabel: { color: '#888' } },
             series: [
-                { name: '洪涝灾害', type: 'line', data: floods, smooth: true, itemStyle: { color: '#4575b4' }, areaStyle: { color: 'rgba(69, 117, 180, 0.2)' } },
-                { name: '热带气旋/飓风', type: 'line', data: storms, smooth: true, itemStyle: { color: '#fdae61' } },
-                { name: '极端高温', type: 'line', data: heats, smooth: true, itemStyle: { color: '#d73027' }, areaStyle: { color: 'rgba(215, 48, 39, 0.2)' } }
+                { name: '区域洪涝', type: 'line', data: floods, smooth: true, itemStyle: { color: '#457b9d' }, areaStyle: { opacity: 0.2 } },
+                { name: '飓风风暴', type: 'line', data: storms, smooth: true, itemStyle: { color: '#f4a261' } },
+                { name: '极端热浪', type: 'line', data: heats, smooth: true, itemStyle: { color: '#e63946' }, areaStyle: { opacity: 0.2 } }
             ]
         });
 
-        // ----------------------------------------------------
-        // 图表 3：气候代价 (南丁格尔玫瑰图)
-        // ----------------------------------------------------
-        var chartImpact = echarts.init(document.getElementById('chart-impact'));
-        chartImpact.setOption({
-            backgroundColor: 'transparent',
-            tooltip: { trigger: 'item', formatter: '{a} <br/>{b} : {c}十亿美元 ({d}%)' },
-            legend: { bottom: '5%', textStyle: { color: '#ccc' } },
-            series: [
-                {
-                    name: '直接经济损失',
-                    type: 'pie',
-                    radius: ['20%', '70%'],
-                    center: ['50%', '45%'],
-                    roseType: 'area',
-                    itemStyle: { borderRadius: 5 },
-                    data: [
-                        { value: 1350, name: '区域性洪涝', itemStyle: { color: '#4575b4' } },
-                        { value: 1100, name: '热带气旋(台风/飓风)', itemStyle: { color: '#fdae61' } },
-                        { value: 550, name: '极端干旱', itemStyle: { color: '#f46d43' } },
-                        { value: 380, name: '森林野火', itemStyle: { color: '#d73027' } },
-                        { value: 150, name: '极端寒潮', itemStyle: { color: '#74add1' } }
-                    ]
-                }
-            ]
+        // ---------------- 图表3：经济损失玫瑰图 ----------------
+        var chart3 = echarts.init(document.getElementById('chart3'));
+        chart3.setOption({
+            ...chartBaseOption,
+            tooltip: { trigger: 'item', formatter: '{b} : ${c}十亿 ({d}%)' },
+            legend: { bottom: 0, textStyle: { color: '#aaa' }, itemWidth: 10, itemHeight: 10 },
+            series: [{
+                type: 'pie', radius: ['15%', '70%'], center: ['50%', '45%'], roseType: 'area',
+                itemStyle: { borderRadius: 4, borderColor: '#16161a', borderWidth: 2 },
+                data: [
+                    { value: 1450, name: '洪涝及次生地质灾害', itemStyle: { color: '#457b9d' } },
+                    { value: 1200, name: '热带气旋(台风/飓风)', itemStyle: { color: '#f4a261' } },
+                    { value: 650, name: '长期极端干旱', itemStyle: { color: '#e9c46a' } },
+                    { value: 420, name: '大面积森林野火', itemStyle: { color: '#e63946' } },
+                    { value: 180, name: '极端寒潮与暴雪', itemStyle: { color: '#1d3557' } }
+                ]
+            }]
         });
 
-        // 窗口尺寸变化时重新计算图表大小
+        // ---------------- 图表4：历史碳排放对比 (横向条形图) ----------------
+        var chart4 = echarts.init(document.getElementById('chart4'));
+        chart4.setOption({
+            ...chartBaseOption,
+            title: { text: '1850-2025 历史累计二氧化碳排放量估算 (十亿吨)', textStyle: { color: '#ccc', fontSize: 14 }, left: 'center', top: 0 },
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            grid: { top: '15%', bottom: '5%', left: '20%', right: '5%' },
+            xAxis: { type: 'value', show: false },
+            yAxis: { type: 'category', inverse: true, data: ['美国', '欧盟及英国', '中国', '俄罗斯', '印度', '整个非洲大陆'], axisLabel: { color: '#ccc', fontSize: 13 }, axisLine: { show: false }, axisTick: { show: false } },
+            series: [{
+                type: 'bar',
+                data: [
+                    { value: 430, itemStyle: { color: '#e63946' } }, 
+                    { value: 360, itemStyle: { color: '#e63946' } }, 
+                    { value: 250, itemStyle: { color: '#f4a261' } }, 
+                    { value: 120, itemStyle: { color: '#f4a261' } }, 
+                    { value: 60, itemStyle: { color: '#457b9d' } }, 
+                    { value: 45, itemStyle: { color: '#2a9d8f' } }
+                ],
+                label: { show: true, position: 'right', color: '#fff', formatter: '{c} B.Tons' },
+                barWidth: '50%',
+                showBackground: true, backgroundStyle: { color: 'rgba(255, 255, 255, 0.05)' }
+            }]
+        });
+
+        // 窗口尺寸变化自适应
         window.addEventListener('resize', function() {
-            chartTemp.resize();
-            chartDisaster.resize();
-            chartImpact.resize();
+            chart1.resize(); chart2.resize(); chart3.resize(); chart4.resize();
         });
     </script>
 </body>
