@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沸腾的地球 - 全球气候危机追踪 | 数据新闻</title>
+    <!-- 引入专业的图表库 ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <style>
+        /* 严肃的数据新闻排版风格 */
+        :root {
+            --bg-color: #f7f7f7;
+            --text-main: #1a1a1a;
+            --text-gray: #666666;
+            --accent-red: #d32f2f;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 新闻头部 */
+        .news-header {
+            border-bottom: 4px solid var(--text-main);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .news-header h1 {
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+
+        .news-header p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            margin: 0;
+        }
+
+        /* 危机警报横幅 */
+        .alert-banner {
+            background-color: var(--text-main);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+            border-left: 8px solid var(--accent-red);
+        }
+
+        .alert-banner .live-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-red);
+            border-radius: 50%;
+            margin-right: 15px;
+            animation: blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.3; }
+        }
+
+        .ticker-wrap {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            margin-left: 15px;
+        }
+
+        .ticker {
+            display: inline-block;
+            animation: ticker 30s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* 主体网格布局 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-red);
+            padding-left: 10px;
+        }
+
+        /* ECharts 图表容器 */
+        #chart-temp {
+            width: 100%;
+            height: 400px;
+        }
+
+        /* 右侧关键数据面板 */
+        .key-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .metric-box {
+            background-color: #fff4f4;
+            padding: 20px;
+            border: 1px solid #ffcdd2;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-red);
+            margin: 10px 0;
+            font-family: "Georgia", serif;
+        }
+
+        .metric-label {
+            font-size: 0.95rem;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .article-text {
+            font-size: 1.1rem;
+            color: #333;
+            text-align: justify;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 报头 -->
+        <header class="news-header">
+            <h1>沸腾的地球：全球极端气候实时仪表盘</h1>
+            <p class="subtitle">Data Visualization Communication Final Project | 数据可视化传播期末新闻策划</p>
+        </header>
+
+        <!-- 实时滚动简讯 -->
+        <div class="alert-banner">
+            <div class="live-dot"></div>
+            <span>LIVE EXTREME WEATHER:</span>
+            <div class="ticker-wrap">
+                <div class="ticker">
+                    [印度] 新德里录得52.9℃破纪录高温 ⚠️ [巴西] 南里奥格兰德州遭遇百年一遇特大洪水 ⚠️ [大西洋] 今年首个超强飓风提前半个月形成 ⚠️ [南极] 冰盖融化速度较十年前增加20% ⚠️ 
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- 左侧：主要图表与数据新闻正文 -->
+            <div class="main-content">
+                <div class="card">
+                    <h2 class="card-title">异常的红色：近140年全球气温距平变化</h2>
+                    <p class="article-text">
+                        根据世界气象组织（WMO）的最新数据，我们正处于人类有记录以来最热的十年。下方的可视化图表展示了自1880年以来全球平均气温相较于工业化前水平的异常变化。不断攀升的红色柱状图，直观地揭示了“全球变暖”已演变为一场迫在眉睫的危机。
+                    </p>
+                    
+                    <!-- 这里是数据可视化的图表 -->
+                    <div id="chart-temp"></div>
+                    
+                    <p class="article-text" style="font-size: 0.9rem; color: #666;">
+                        <em>数据来源：NASA Goddard Institute for Space Studies (GISS)。注：基准期为1880-1920年平均气温。</em>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 右侧：核心指标卡片 -->
+            <div class="sidebar">
+                <div class="key-metrics">
+                    <div class="card metric-box">
+                        <div class="metric-label">2025/2026年度全球平均气温异常值</div>
+                        <div class="metric-value">+1.48°C</div>
+                        <div style="font-size: 0.85rem; color: #666;">逼近《巴黎协定》1.5°C临界点</div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">近期高频灾害词云</h2>
+                        <ul style="line-height: 2; color: #444; padding-left: 20px;">
+                            <li><strong>极端热浪</strong> (涉及2.4亿人口)</li>
+                            <li><strong>区域性洪涝</strong> (较历史同期上升30%)</li>
+                            <li><strong>森林野火</strong> (过火面积激增)</li>
+                            <li><strong>海洋热浪</strong> (珊瑚白化预警)</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">作者/策划人</h2>
+                        <p style="margin: 0; color: #555;"><strong>姓名：</strong> [你的名字/学号]</p>
+                        <p style="margin: 5px 0 0 0; color: #555;"><strong>课程：</strong> 数据可视化传播</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2026 数据新闻作业呈现 - 所用数据为演示及学术研究目的
+        </div>
+    </div>
+
+    <!-- 图表渲染脚本 -->
+    <script>
+        // 初始化 ECharts 实例
+        var myChart = echarts.init(document.getElementById('chart-temp'));
+
+        // 模拟生成近几十年气温距平数据 (符合真实趋势)
+        var years = [];
+        var tempData = [];
+        for (var i = 1880; i <= 2025; i++) {
+            years.push(i);
+            // 构造一个逐渐上升的趋势，并加入随机波动
+            var baseTemp = (i - 1880) * 0.01 - 0.4; 
+            var noise = (Math.random() - 0.5) * 0.3;
+            // 近20年升温加速
+            if(i > 2000) { baseTemp += (i - 2000) * 0.02; } 
+            tempData.push(parseFloat((baseTemp + noise).toFixed(2)));
+        }
+
+        // 图表配置项
+        var option = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{b}年 <br/>气温异常值: {c}°C'
+            },
+            grid: {
+                left: '5%',
+                right: '5%',
+                bottom: '10%',
+                top: '15%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: years,
+                axisLabel: { color: '#666' },
+                axisTick: { show: false },
+                axisLine: { lineStyle: { color: '#ccc' } }
+            },
+            yAxis: {
+                type: 'value',
+                name: '气温异常值 (°C)',
+                nameTextStyle: { color: '#666', padding: [0, 0, 0, 20] },
+                axisLabel: { color: '#666' },
+                splitLine: { lineStyle: { type: 'dashed', color: '#eee' } }
+            },
+            visualMap: {
+                show: false,
+                min: -0.5,
+                max: 1.5,
+                dimension: 1,
+                inRange: {
+                    // 经典的温度条纹配色：从蓝到红
+                    color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#ffffbf', '#fdae61', '#f46d43', '#d73027', '#a50026']
+                }
+            },
+            series: [
+                {
+                    data: tempData,
+                    type: 'bar',
+                    barWidth: '80%',
+                    itemStyle: {
+                        borderRadius: [2, 2, 0, 0]
+                    }
+                }
+            ]
+        };
+
+        // 渲染图表
+        myChart.setOption(option);
+
+        // 响应式调整
+        window.addEventListener('resize', function() {
+            myChart.resize();
+        });
+    </script>
+</body>
+</html>
